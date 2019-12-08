@@ -86,4 +86,4 @@ async def temp(ctx, *, conversion):
 
 
 
-client.run('NjM5NTk0MjM4MTc0MTY3MDYx.XbtizA.34y8BHRWwl78D2fvUF-nrTOAUSk')
+client.run('')
