@@ -132,7 +132,7 @@ def m_in_conversion(start_len):
     new_len = start_len * 39.370078740157
     return new_len
 
-#temp command
+#Length command
 @client.command(aliases=['len'])
 async def _len(ctx, *, conversion):
     conversion_scrub = conversion.lower()
@@ -189,4 +189,63 @@ async def _len(ctx, *, conversion):
             await ctx.send(f'The Correct format is Exp:`imp.len 10km to mi`   Valid units are km m cm mm mi yd ft in')
     await ctx.send(f'{start_len} is {new_len:.4f} {unit}')
 
+
+
+#weight conversion to grams
+def kg_g_conversion(start_wgt):
+    new_wgt = start_wgt * 1000
+    return new_wgt
+def lb_g_conversion(start_wgt):
+    new_wgt = start_wgt * 453.5924
+    return new_wgt
+def oz_g_conversion(start_wgt):
+    new_wgt = start_wgt * 28.349556839727
+    return new_wgt
+
+#weight conversion from grams
+def g_kg_conversion(start_wgt):
+    new_wgt = start_wgt / 1000
+    return new_wgt
+def g_lb_conversion(start_wgt):
+    new_wgt = start_wgt * 0.002204622476038
+    return new_wgt
+def g_oz_conversion(start_wgt):
+    new_wgt = start_wgt * 0.03527392
+    return new_wgt
+#Length command
+@client.command()
+async def wgt(ctx, *, conversion):
+    conversion_scrub = conversion.lower()
+    conversion_split = conversion_scrub.split()
+    start_wgt = conversion_split[0]
+    end_conv = conversion_split [2]
+    int_wgt = int(start_wgt[:-2])
+    new_wgt = 0
+    unit = ''
+    if 'kg' in start_wgt:
+        grams_conv = kg_g_conversion(int_wgt)
+    elif 'lb' in start_wgt:
+        grams_conv = lb_g_conversion(int_wgt)
+    elif 'oz' in start_wgt:
+        grams_conv = oz_g_conversion(int_wgt)
+    elif 'g' in start_wgt:
+        grams_conv = int(start_wgt[:-1])
+    else:
+        await ctx.send(f'The Correct format is Exp:`imp.wgt 180lb to kg`  Valid units are kg g lb oz')
+    if end_conv == 'g':
+        new_wgt = grams_conv
+        unit = 'Grams'
+    else:
+        if 'kg' in end_conv:
+            new_wgt = g_kg_conversion(grams_conv)
+            unit = 'Kilograms'
+        elif 'lb' in end_conv:
+            new_wgt = g_lb_conversion(grams_conv)
+            unit = 'Pounds'
+        elif 'oz' in end_conv:
+            new_wgt = g_oz_conversion(grams_conv)
+            unit = 'Ounces'
+        else:
+            await ctx.send(f'The Correct format is Exp:`imp.wgt 180lb to kg`  Valid units are kg g lb oz')
+    await ctx.send(f'{start_wgt} is {new_wgt:.2f} {unit}')
 client.run('')
