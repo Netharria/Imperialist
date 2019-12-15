@@ -248,4 +248,5 @@ async def wgt(ctx, *, conversion):
         else:
             await ctx.send(f'The Correct format is Exp:`imp.wgt 180lb to kg`  Valid units are kg g lb oz')
     await ctx.send(f'{start_wgt} is {new_wgt:.2f} {unit}')
-client.run('')
+with open("token","r") as f:
+    client.run(f.readline().strip())
