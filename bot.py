@@ -15,7 +15,8 @@ import random
 
 #8ball random answer
 
-@client.command(aliases=['8ball', 'test'])
+@client.command(aliases=['8ball'])
+@commands.has_permissions(manage_messages=True)
 async def _8ball(ctx, *, question):
     responses = ['It is certain.',
                 'It is decidedly so.',
@@ -59,7 +60,7 @@ async def temp(ctx, *, conversion):
     conversion_scrub = conversion.upper()
     conversion_split = conversion_scrub.split()
     start_temp = conversion_split[0]
-    int_temp = int(start_temp[:-1])
+    int_temp = float(start_temp[:-1])
     if 'C' in start_temp:
         if 'F' in conversion_split[2]:
             new_temp = c_f_conversion(int_temp)
@@ -139,7 +140,7 @@ async def _len(ctx, *, conversion):
     conversion_split = conversion_scrub.split()
     start_len = conversion_split[0]
     end_conv = conversion_split [2]
-    int_len = int(start_len[:-2])
+    int_len = float(start_len[:-2])
     new_len = 0
     unit = ''
     if 'km' in start_len:
@@ -157,7 +158,7 @@ async def _len(ctx, *, conversion):
     elif 'in' in start_len:
         meter_conv = in_m_conversion(int_len)
     elif 'm' in start_len:
-        meter_conv = int(start_len[:-1])
+        meter_conv = float(start_len[:-1])
     else:
         await ctx.send(f'The Correct format is Exp:`imp.len 10km to mi`  Valid units are km m cm mm mi yd ft in')
     if end_conv == 'm':
@@ -219,7 +220,7 @@ async def wgt(ctx, *, conversion):
     conversion_split = conversion_scrub.split()
     start_wgt = conversion_split[0]
     end_conv = conversion_split [2]
-    int_wgt = int(start_wgt[:-2])
+    int_wgt = float(start_wgt[:-2])
     new_wgt = 0
     unit = ''
     if 'kg' in start_wgt:
@@ -229,7 +230,7 @@ async def wgt(ctx, *, conversion):
     elif 'oz' in start_wgt:
         grams_conv = oz_g_conversion(int_wgt)
     elif 'g' in start_wgt:
-        grams_conv = int(start_wgt[:-1])
+        grams_conv = float(start_wgt[:-1])
     else:
         await ctx.send(f'The Correct format is Exp:`imp.wgt 180lb to kg`  Valid units are kg g lb oz')
     if end_conv == 'g':
