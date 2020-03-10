@@ -9,7 +9,9 @@ async def on_ready():
 
 @client.command()
 async def ping(ctx):
-    await ctx.send(f'Pong! {round(client.latency * 1000)}ms')
+    embed=discord.Embed(title='**Ping**', description=f'Pong! {round(client.latency * 1000)}ms')
+    embed.set_author(name=f"{client.user.display_name}", icon_url=client.user.avatar_url)
+    await ctx.send(embed=embed)
 
 import random
 
@@ -38,7 +40,9 @@ async def _8ball(ctx, *, question):
                 'My sources say no.',
                 'Outlook not so good.',
                 'Very doubtful.']
-    await ctx.send(f'Question: {question}\nAnswer: {random.choice(responses)}')
+    embed=discord.Embed(title=f'**Question: {question}**', description=f'**Answer: {random.choice(responses)}**')
+    embed.set_author(name=f"{ctx.author.display_name}", icon_url=ctx.author.avatar_url)
+    await ctx.send(embed=embed)
 
 #temp conversions
 def c_f_conversion(start_temp):
