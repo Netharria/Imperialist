@@ -40,8 +40,28 @@ async def _8ball(ctx, *, question):
                 'My sources say no.',
                 'Outlook not so good.',
                 'Very doubtful.']
-    embed=discord.Embed(title=f'**Question: {question}**', description=f'**Answer: {random.choice(responses)}**')
+    professions = ['healthcare professional',
+                'artist',
+                'business professional',
+                'transport engineer',
+                'military officer',
+                'accountant',
+                'social worker',
+                'ship captain',
+                'vocalist',
+                'linguist'
+                'musician',
+                'HR representative',
+                'scientist',
+                'home inspector',
+                'cable technician',
+                'plumber',
+                'electrian',
+                'structural engineer',
+                'arborist']
+    embed=discord.Embed(title=f'**Magic 8Ball**', description=f'**Question: {question}\n\nAnswer: {random.choice(responses)}**')
     embed.set_author(name=f"{ctx.author.display_name}", icon_url=ctx.author.avatar_url)
+    embed.set_footer(text=f'This is not intended to give actual advice. | For actual advice, please consult a trained {random.choice(professions)}.')
     await ctx.send(embed=embed)
 
 #temp conversions
