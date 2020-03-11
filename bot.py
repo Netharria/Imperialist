@@ -49,7 +49,7 @@ async def _8ball(ctx, *, question):
                 'social worker',
                 'ship captain',
                 'vocalist',
-                'linguist'
+                'linguist',
                 'musician',
                 'HR representative',
                 'scientist',
@@ -63,6 +63,16 @@ async def _8ball(ctx, *, question):
     embed.set_author(name=f"{ctx.author.display_name}", icon_url=ctx.author.avatar_url)
     embed.set_footer(text=f'This is not intended to give actual advice. | For actual advice, please consult a trained {random.choice(professions)}.')
     await ctx.send(embed=embed)
+
+@client.command()
+async def roll(ctx, *, limit):
+    limit_int = int(limit)
+    roll = range(1, limit_int)
+    embed=discord.Embed(title=f'**Roll**', description=f'**{random.choice(roll)}/{limit}**')
+    embed.set_author(name=f"{client.user.display_name}", icon_url=client.user.avatar_url)
+    await ctx.send(embed=embed)
+
+
 
 #temp conversions
 def c_f_conversion(start_temp):
@@ -109,7 +119,9 @@ async def temp(ctx, *, conversion):
             degree = 'Fahrenheit'
     else:
         await ctx.send(f'The Correct format is Exp:`imp.temp 10F to C`')
-    await ctx.send(f'{start_temp} is {new_temp:.2f} {degree}')
+    embed=discord.Embed(title=f'**Tempurate Conversions**', description=f'{start_temp} is {new_temp:.2f} {degree}')
+    embed.set_author(name=f"{client.user.display_name}", icon_url=client.user.avatar_url)
+    await ctx.send(embed=embed)
 
 #Length Conversions to meters
 def km_m_conversion(start_len):
@@ -212,8 +224,9 @@ async def _len(ctx, *, conversion):
             unit = 'Inches'
         else:
             await ctx.send(f'The Correct format is Exp:`imp.len 10km to mi`   Valid units are km m cm mm mi yd ft in')
-    await ctx.send(f'{start_len} is {new_len:.4f} {unit}')
-
+    embed=discord.Embed(title=f'**Length Conversions**', description=f'{start_len} is {new_len:.4f} {unit}')
+    embed.set_author(name=f"{client.user.display_name}", icon_url=client.user.avatar_url)
+    await ctx.send(embed=embed)
 
 
 #weight conversion to grams
@@ -272,6 +285,9 @@ async def wgt(ctx, *, conversion):
             unit = 'Ounces'
         else:
             await ctx.send(f'The Correct format is Exp:`imp.wgt 180lb to kg`  Valid units are kg g lb oz')
-    await ctx.send(f'{start_wgt} is {new_wgt:.2f} {unit}')
+    embed=discord.Embed(title=f'Weight Conversions', description=f'{start_wgt} is {new_wgt:.2f} {unit}')
+    embed.set_author(name=f"{client.user.display_name}", icon_url=client.user.avatar_url)
+    await ctx.send(embed=embed)
+
 with open("token","r") as f:
     client.run(f.readline().strip())
