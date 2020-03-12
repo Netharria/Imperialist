@@ -59,13 +59,13 @@ async def _8ball(ctx, *, question):
                 'electrian',
                 'structural engineer',
                 'arborist']
-    embed=discord.Embed(title=f'**Magic 8Ball**', description=f'**Question: {question}\n\nAnswer: {random.choice(responses)}**')
+    embed=discord.Embed(title=f'**Magic 8Ball**', description=f'**Question: {question}\n\nAnswer: {random.choice(responses)}**', color=0x8000ff)
     embed.set_author(name=f"{ctx.author.display_name}", icon_url=ctx.author.avatar_url)
     embed.set_footer(text=f'This is not intended to give actual advice. | For actual advice, please consult a trained {random.choice(professions)}.')
     await ctx.send(embed=embed)
 
 @client.command()
-async def roll(ctx, *, limit):
+async def roll(ctx, *, limit=100):
     limit_int = int(limit)
     roll = range(1, limit_int)
     embed=discord.Embed(title=f'**Roll**', description=f'**{random.choice(roll)}/{limit}**')
