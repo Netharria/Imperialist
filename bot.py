@@ -5,6 +5,7 @@ client = commands.Bot(command_prefix = 'imp.')
 
 @client.event
 async def on_ready():
+    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="over her vast colonies."))
     print('Bot is ready.')
 
 @client.command()
