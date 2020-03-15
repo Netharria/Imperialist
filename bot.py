@@ -18,8 +18,18 @@ import random
 
 #8ball random answer
 
+def is_in_channel():
+    def predicate(ctx):
+        return ctx.channel.id == 390318225440768000
+    return commands.check(predicate)
+
+def has_permissions():
+    def predicate(ctx):
+        return ctx.author.guild_permissions.manage_messages == True
+    return commands.check(predicate)
+
 @client.command(aliases=['8ball'])
-@commands.has_permissions(manage_messages=True)
+@commands.check_any(is_in_channel(), has_permissions())
 async def _8ball(ctx, *, question):
     responses = ['It is certain.',
                 'It is decidedly so.',
