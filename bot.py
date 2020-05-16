@@ -1,304 +1,196 @@
+import random
+
 import discord
 from discord.ext import commands
 
-client = commands.Bot(command_prefix = 'imp.')
+import length
+import temperature
+import volume
+import weight
 
-@client.event
+bot = commands.Bot(command_prefix="imp.")
+
+
+@bot.event
 async def on_ready():
-    await client.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name="over her vast colonies."))
-    print('Bot is ready.')
+    await bot.change_presence(
+        activity=discord.Activity(
+            type=discord.ActivityType.watching, name="over her vast colonies."
+        )
+    )
+    print("Bot is ready.")
 
-@client.command()
+
+@bot.command()
 async def ping(ctx):
-    embed=discord.Embed(title='**Ping**', description=f'Pong! {round(client.latency * 1000)}ms')
-    embed.set_author(name=f"{client.user.display_name}", icon_url=client.user.avatar_url)
+    embed = discord.Embed(
+        title="**Ping**", description=f"Pong! {round(bot.latency * 1000)}ms"
+    )
+    embed.set_author(name=f"{bot.user.display_name}", icon_url=bot.user.avatar_url)
     await ctx.send(embed=embed)
 
-import random
 
-#8ball random answer
+# 8ball random answer
+
 
 def is_in_channel():
     def predicate(ctx):
         return ctx.channel.id == 390318225440768000
+
     return commands.check(predicate)
+
 
 def has_permissions():
     def predicate(ctx):
-        return ctx.author.guild_permissions.manage_messages == True
+        return ctx.author.guild_permissions.manage_messages is True
+
     return commands.check(predicate)
 
-@client.command(aliases=['8ball'])
+
+@bot.command(aliases=["8ball"])
 @commands.check_any(is_in_channel(), has_permissions())
 async def _8ball(ctx, *, question):
-    responses = ['It is certain.',
-                'It is decidedly so.',
-                'Without a doubt.',
-                'Yes - definitely.',
-                'You may rely on it.',
-                'As I see it, yes.',
-                'Most likely.',
-                'Outlook good.',
-                'Yes.',
-                'Signs point to yes.',
-                'Reply hazy, try again.',
-                'Ask again later.',
-                'Better not tell you now.',
-                'Cannot predict now.',
-                'Concentrate and ask again.',
-                'Don\'t count on it.',
-                'My reply is no.',
-                'My sources say no.',
-                'Outlook not so good.',
-                'Very doubtful.']
-    professions = ['healthcare professional',
-                'artist',
-                'business professional',
-                'transport engineer',
-                'military officer',
-                'accountant',
-                'social worker',
-                'ship captain',
-                'vocalist',
-                'linguist',
-                'musician',
-                'HR representative',
-                'scientist',
-                'home inspector',
-                'cable technician',
-                'plumber',
-                'electrian',
-                'structural engineer',
-                'arborist']
-    embed=discord.Embed(title=f'**Magic 8Ball**', description=f'**Question: {question}\n\nAnswer: {random.choice(responses)}**', color=0x8000ff)
+    responses = [
+        "It is certain.",
+        "It is decidedly so.",
+        "Without a doubt.",
+        "Yes - definitely.",
+        "You may rely on it.",
+        "As I see it, yes.",
+        "Most likely.",
+        "Outlook good.",
+        "Yes.",
+        "Signs point to yes.",
+        "Reply hazy, try again.",
+        "Ask again later.",
+        "Better not tell you now.",
+        "Cannot predict now.",
+        "Concentrate and ask again.",
+        "Don't count on it.",
+        "My reply is no.",
+        "My sources say no.",
+        "Outlook not so good.",
+        "Very doubtful.",
+    ]
+    professions = [
+        "healthcare professional",
+        "artist",
+        "business professional",
+        "transport engineer",
+        "military officer",
+        "accountant",
+        "social worker",
+        "ship captain",
+        "vocalist",
+        "linguist",
+        "musician",
+        "HR representative",
+        "scientist",
+        "home inspector",
+        "cable technician",
+        "plumber",
+        "electrian",
+        "structural engineer",
+        "arborist",
+    ]
+    embed = discord.Embed(
+        title=f"**Magic 8Ball**",
+        description=f"**Question: {question}\n\nAnswer: {random.choice(responses)}**",
+        color=0x8000FF,
+    )
     embed.set_author(name=f"{ctx.author.display_name}", icon_url=ctx.author.avatar_url)
-    embed.set_footer(text=f'This is not intended to give actual advice. | For actual advice, please consult a trained {random.choice(professions)}.')
+    embed.set_footer(
+        text=f"This is not intended to give actual advice. | "
+        f"For actual advice, please consult a trained {random.choice(professions)}."
+    )
     await ctx.send(embed=embed)
 
-@client.command()
+
+@bot.command()
 async def roll(ctx, *, limit=100):
-    limit_int = int(limit)
-    roll = range(1, limit_int)
-    embed=discord.Embed(title=f'**Roll**', description=f'**{random.choice(roll)}/{limit}**')
-    embed.set_author(name=f"{client.user.display_name}", icon_url=client.user.avatar_url)
+    embed = discord.Embed(
+        title=f"**Roll**", description=f"**{random.randint(1, int(limit))}/{limit}**"
+    )
+    embed.set_author(name=f"{bot.user.display_name}", icon_url=bot.user.avatar_url)
     await ctx.send(embed=embed)
 
 
-
-#temp conversions
-def c_f_conversion(start_temp):
-    new_temp = (start_temp * 9/5) + 32
-    return new_temp
-def f_c_conversion(start_temp):
-    new_temp = (start_temp - 32) * 5/9
-    return new_temp
-def k_c_conversion(start_temp):
-    new_temp = start_temp - 273.15
-    return new_temp
-def c_k_conversion(start_temp):
-    new_temp = start_temp + 273.15
-    return new_temp
-
-#temp Commands
-@client.command()
-async def temp(ctx, *, conversion):
-    conversion_scrub = conversion.upper()
-    conversion_split = conversion_scrub.split()
-    start_temp = conversion_split[0]
-    int_temp = float(start_temp[:-1])
-    if 'C' in start_temp:
-        if 'F' in conversion_split[2]:
-            new_temp = c_f_conversion(int_temp)
-            degree = 'Fahrenheit'
-        if 'K' in conversion_split[2]:
-            new_temp = c_k_conversion(int_temp)
-            degree = 'Kelvin'
-
-    elif 'F' in start_temp:
-        if 'C' in conversion_split[2]:
-            new_temp = f_c_conversion(int_temp)
-            degree = 'Celcius'
-        if 'K' in conversion_split[2]:
-            new_temp = c_k_conversion(f_c_conversion(int_temp))
-            degree = 'Kelvin'
-    elif 'K' in start_temp:
-        if 'C' in conversion_split[2]:
-            new_temp = k_c_conversion(int_temp)
-            degree = 'Celcius'
-        if 'F' in conversion_split[2]:
-            new_temp = c_f_conversion(k_c_conversion(int_temp))
-            degree = 'Fahrenheit'
+# temp Commands
+@bot.command()
+async def temp(ctx, start_temp, start_unit, word, destination_unit):
+    result = temperature.convert_temp(
+        float(start_temp), start_unit, destination_unit
+    )
+    start_unit = temperature.convert_units(start_unit)
+    end_unit = temperature.convert_units(destination_unit)
+    if result is False:
+        await ctx.send(f"The Correct format is Exp:`imp.temp 10 F to C`")
     else:
-        await ctx.send(f'The Correct format is Exp:`imp.temp 10F to C`')
-    embed=discord.Embed(title=f'**Tempurate Conversions**', description=f'{start_temp} is {new_temp:.2f} {degree}')
-    embed.set_author(name=f"{client.user.display_name}", icon_url=client.user.avatar_url)
-    await ctx.send(embed=embed)
+        embed = discord.Embed(
+            title=f"**Temperature Conversions**",
+            description=f"{start_temp} {start_unit} is {result:.2f} {end_unit}",
+        )
+        embed.set_author(name=f"{bot.user.display_name}", icon_url=bot.user.avatar_url)
+        await ctx.send(embed=embed)
 
-#Length Conversions to meters
-def km_m_conversion(start_len):
-    new_len = start_len * 1000
-    return new_len
-def cm_m_conversion(start_len):
-    new_len = start_len / 100
-    return new_len
-def mm_m_conversion(start_len):
-    new_len = start_len / 1000
-    return new_len
-def mi_m_conversion(start_len):
-    new_len = start_len * 1609.344
-    return new_len
-def yd_m_conversion(start_len):
-    new_len = start_len * 0.9144
-    return new_len
-def ft_m_conversion(start_len):
-    new_len = start_len * 0.3048
-    return new_len
-def in_m_conversion(start_len):
-    new_len = start_len * .0254
-    return new_len
 
-#Length Conversions from meters
-def m_km_conversion(start_len):
-    new_len = start_len / 1000
-    return new_len
-def m_cm_conversion(start_len):
-    new_len = start_len * 100
-    return new_len
-def m_mm_conversion(start_len):
-    new_len = start_len * 1000
-    return new_len
-def m_mi_conversion(start_len):
-    new_len = start_len * 0.00062137119223733
-    return new_len
-def m_yd_conversion(start_len):
-    new_len = start_len * 1.0936132983377
-    return new_len
-def m_ft_conversion(start_len):
-    new_len = start_len * 3.2808398950131
-    return new_len
-def m_in_conversion(start_len):
-    new_len = start_len * 39.370078740157
-    return new_len
-
-#Length command
-@client.command(aliases=['len'])
-async def _len(ctx, *, conversion):
-    conversion_scrub = conversion.lower()
-    conversion_split = conversion_scrub.split()
-    start_len = conversion_split[0]
-    end_conv = conversion_split [2]
-    int_len = float(start_len[:-2])
-    new_len = 0
-    unit = ''
-    if 'km' in start_len:
-        meter_conv = km_m_conversion(int_len)
-    elif 'cm' in start_len:
-        meter_conv = cm_m_conversion(int_len)
-    elif 'mm' in start_len:
-        meter_conv = mm_m_conversion(int_len)
-    elif 'mi' in start_len:
-        meter_conv = mi_m_conversion(int_len)
-    elif 'yd' in start_len:
-        meter_conv = yd_m_conversion(int_len)
-    elif 'ft' in start_len:
-        meter_conv = ft_m_conversion(int_len)
-    elif 'in' in start_len:
-        meter_conv = in_m_conversion(int_len)
-    elif 'm' in start_len:
-        meter_conv = float(start_len[:-1])
+# Length command
+@bot.command(aliases=["len"])
+async def _len(ctx, start_len, start_unit, word, destination_unit):
+    result = length.convert_length(
+        float(start_len), start_unit, destination_unit
+    )
+    start_unit = length.convert_unit(start_unit)
+    end_unit = length.convert_unit(destination_unit)
+    if result is False:
+        await ctx.send(
+            f"The Correct format is Exp:`imp.len 10 km to mi`   Valid units are km m cm mm mi yd ft in"
+        )
     else:
-        await ctx.send(f'The Correct format is Exp:`imp.len 10km to mi`  Valid units are km m cm mm mi yd ft in')
-    if end_conv == 'm':
-        new_len = meter_conv
-        unit = 'Meters'
+        embed = discord.Embed(
+            title=f"**Length Conversions**",
+            description=f"{start_len} {start_unit} is {result:.4f} {end_unit}",
+        )
+        embed.set_author(name=f"{bot.user.display_name}", icon_url=bot.user.avatar_url)
+        await ctx.send(embed=embed)
+
+
+# Length command
+@bot.command()
+async def wgt(ctx, start_wgt, start_unit, word, destination_unit):
+    result = weight.convert_wgt(float(start_wgt), start_unit, destination_unit)
+    start_unit = weight.convert_unit(start_unit)
+    end_unit = weight.convert_unit(destination_unit)
+    if result is False:
+        await ctx.send(
+            f"The Correct format is Exp:`imp.wgt 180 lb to kg`  Valid units are kg g lb oz"
+        )
     else:
-        if 'km' in end_conv:
-            new_len = m_km_conversion(meter_conv)
-            unit = 'Kilometers'
-        elif 'cm' in end_conv:
-            new_len = m_cm_conversion(meter_conv)
-            unit = 'Centimeters'
-        elif 'mm' in end_conv:
-            new_len = m_mm_conversion(meter_conv)
-            unit = 'Millimeters'
-        elif 'mi' in end_conv:
-            new_len = m_mi_conversion(meter_conv)
-            unit = 'Miles'
-        elif 'yd' in end_conv:
-            new_len = m_yd_conversion(meter_conv)
-            unit = 'Yards'
-        elif 'ft' in end_conv:
-            new_len = m_ft_conversion(meter_conv)
-            unit = 'Feet'
-        elif 'in' in end_conv:
-            new_len = m_in_conversion(meter_conv)
-            unit = 'Inches'
-        else:
-            await ctx.send(f'The Correct format is Exp:`imp.len 10km to mi`   Valid units are km m cm mm mi yd ft in')
-    embed=discord.Embed(title=f'**Length Conversions**', description=f'{start_len} is {new_len:.4f} {unit}')
-    embed.set_author(name=f"{client.user.display_name}", icon_url=client.user.avatar_url)
-    await ctx.send(embed=embed)
+        embed = discord.Embed(
+            title=f"Weight Conversions",
+            description=f"{start_wgt} {start_unit} is {result:.2f} {end_unit}",
+        )
+        embed.set_author(name=f"{bot.user.display_name}", icon_url=bot.user.avatar_url)
+        await ctx.send(embed=embed)
 
 
-#weight conversion to grams
-def kg_g_conversion(start_wgt):
-    new_wgt = start_wgt * 1000
-    return new_wgt
-def lb_g_conversion(start_wgt):
-    new_wgt = start_wgt * 453.5924
-    return new_wgt
-def oz_g_conversion(start_wgt):
-    new_wgt = start_wgt * 28.349556839727
-    return new_wgt
-
-#weight conversion from grams
-def g_kg_conversion(start_wgt):
-    new_wgt = start_wgt / 1000
-    return new_wgt
-def g_lb_conversion(start_wgt):
-    new_wgt = start_wgt * 0.002204622476038
-    return new_wgt
-def g_oz_conversion(start_wgt):
-    new_wgt = start_wgt * 0.03527392
-    return new_wgt
-#Length command
-@client.command()
-async def wgt(ctx, *, conversion):
-    conversion_scrub = conversion.lower()
-    conversion_split = conversion_scrub.split()
-    start_wgt = conversion_split[0]
-    end_conv = conversion_split [2]
-    int_wgt = float(start_wgt[:-2])
-    new_wgt = 0
-    unit = ''
-    if 'kg' in start_wgt:
-        grams_conv = kg_g_conversion(int_wgt)
-    elif 'lb' in start_wgt:
-        grams_conv = lb_g_conversion(int_wgt)
-    elif 'oz' in start_wgt:
-        grams_conv = oz_g_conversion(int_wgt)
-    elif 'g' in start_wgt:
-        grams_conv = float(start_wgt[:-1])
+@bot.command()
+async def vol(ctx, start_vol, start_unit, word, destination_unit):
+    result = volume.convert_vol(float(start_vol), start_unit, destination_unit)
+    start_unit = volume.convert_units(start_unit)
+    end_unit = volume.convert_units(destination_unit)
+    if result is False:
+        await ctx.send(
+            f"The Correct format is Exp:`imp.vol 180L to gal`  Valid units are L mL gal qt pt c oz tbsp tsp"
+        )
     else:
-        await ctx.send(f'The Correct format is Exp:`imp.wgt 180lb to kg`  Valid units are kg g lb oz')
-    if end_conv == 'g':
-        new_wgt = grams_conv
-        unit = 'Grams'
-    else:
-        if 'kg' in end_conv:
-            new_wgt = g_kg_conversion(grams_conv)
-            unit = 'Kilograms'
-        elif 'lb' in end_conv:
-            new_wgt = g_lb_conversion(grams_conv)
-            unit = 'Pounds'
-        elif 'oz' in end_conv:
-            new_wgt = g_oz_conversion(grams_conv)
-            unit = 'Ounces'
-        else:
-            await ctx.send(f'The Correct format is Exp:`imp.wgt 180lb to kg`  Valid units are kg g lb oz')
-    embed=discord.Embed(title=f'Weight Conversions', description=f'{start_wgt} is {new_wgt:.2f} {unit}')
-    embed.set_author(name=f"{client.user.display_name}", icon_url=client.user.avatar_url)
-    await ctx.send(embed=embed)
+        embed = discord.Embed(
+            title=f"Volume Conversions",
+            description=f"{start_vol} {start_unit} is {result:.2f} {end_unit}",
+        )
+        embed.set_author(name=f"{bot.user.display_name}", icon_url=bot.user.avatar_url)
+        await ctx.send(embed=embed)
 
-with open("token","r") as f:
-    client.run(f.readline().strip())
+
+with open("token", "r") as f:
+    bot.run(f.readline().strip())
