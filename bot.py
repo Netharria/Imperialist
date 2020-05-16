@@ -118,9 +118,7 @@ async def roll(ctx, *, limit=100):
 # temp Commands
 @bot.command()
 async def temp(ctx, start_temp, start_unit, word, destination_unit):
-    result = temperature.convert_temp(
-        float(start_temp), start_unit, destination_unit
-    )
+    result = temperature.convert_temp(float(start_temp), start_unit, destination_unit)
     start_unit = temperature.convert_units(start_unit)
     end_unit = temperature.convert_units(destination_unit)
     if result is False:
@@ -137,9 +135,7 @@ async def temp(ctx, start_temp, start_unit, word, destination_unit):
 # Length command
 @bot.command(aliases=["len"])
 async def _len(ctx, start_len, start_unit, word, destination_unit):
-    result = length.convert_length(
-        float(start_len), start_unit, destination_unit
-    )
+    result = length.convert_length(float(start_len), start_unit, destination_unit)
     start_unit = length.convert_unit(start_unit)
     end_unit = length.convert_unit(destination_unit)
     if result is False:
