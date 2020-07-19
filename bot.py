@@ -1,6 +1,6 @@
 import random
-
 import discord
+import typing
 from discord.ext import commands
 
 import length
@@ -101,13 +101,13 @@ async def _8ball(ctx, *, question):
     embed.set_author(name=f"{ctx.author.display_name}", icon_url=ctx.author.avatar_url)
     embed.set_footer(
         text=f"This is not intended to give actual advice. | "
-        f"For actual advice, please consult a trained {random.choice(professions)}."
+             f"For actual advice, please consult a trained {random.choice(professions)}."
     )
     await ctx.send(embed=embed)
 
 
 @bot.command()
-async def roll(ctx, *, limit=100):
+async def roll(ctx, *, limit: int = 100):
     embed = discord.Embed(
         title=f"**Roll**", description=f"**{random.randint(1, int(limit))}/{limit}**"
     )
@@ -117,8 +117,8 @@ async def roll(ctx, *, limit=100):
 
 # temp Commands
 @bot.command()
-async def temp(ctx, start_temp, start_unit, word, destination_unit):
-    result = temperature.convert_temp(float(start_temp), start_unit, destination_unit)
+async def temp(ctx, start_temp: float, start_unit: str, word, destination_unit: str):
+    result = temperature.convert_temp(start_temp, start_unit, destination_unit)
     start_unit = temperature.convert_units(start_unit)
     end_unit = temperature.convert_units(destination_unit)
     if result is False:
@@ -134,8 +134,8 @@ async def temp(ctx, start_temp, start_unit, word, destination_unit):
 
 # Length command
 @bot.command(aliases=["len"])
-async def _len(ctx, start_len, start_unit, word, destination_unit):
-    result = length.convert_length(float(start_len), start_unit, destination_unit)
+async def _len(ctx, start_len: float, start_unit: str, word, destination_unit: str):
+    result = length.convert_length(start_len, start_unit, destination_unit)
     start_unit = length.convert_unit(start_unit)
     end_unit = length.convert_unit(destination_unit)
     if result is False:
@@ -153,8 +153,8 @@ async def _len(ctx, start_len, start_unit, word, destination_unit):
 
 # Length command
 @bot.command()
-async def wgt(ctx, start_wgt, start_unit, word, destination_unit):
-    result = weight.convert_wgt(float(start_wgt), start_unit, destination_unit)
+async def wgt(ctx, start_wgt: float, start_unit, word, destination_unit):
+    result = weight.convert_wgt(start_wgt, start_unit, destination_unit)
     start_unit = weight.convert_unit(start_unit)
     end_unit = weight.convert_unit(destination_unit)
     if result is False:
@@ -171,13 +171,13 @@ async def wgt(ctx, start_wgt, start_unit, word, destination_unit):
 
 
 @bot.command()
-async def vol(ctx, start_vol, start_unit, word, destination_unit):
-    result = volume.convert_vol(float(start_vol), start_unit, destination_unit)
+async def vol(ctx, start_vol: float, start_unit, word, destination_unit):
+    result = volume.convert_vol(start_vol, start_unit, destination_unit)
     start_unit = volume.convert_units(start_unit)
     end_unit = volume.convert_units(destination_unit)
     if result is False:
         await ctx.send(
-            f"The Correct format is Exp:`imp.vol 180L to gal`  Valid units are L mL gal qt pt c oz tbsp tsp"
+            f"The Correct format is Exp:`imp.vol 180 L to gal`  Valid units are L mL gal qt pt c oz tbsp tsp"
         )
     else:
         embed = discord.Embed(
@@ -186,6 +186,23 @@ async def vol(ctx, start_vol, start_unit, word, destination_unit):
         )
         embed.set_author(name=f"{bot.user.display_name}", icon_url=bot.user.avatar_url)
         await ctx.send(embed=embed)
+
+
+@roll.error
+@temp.error
+@_len.error
+@wgt.error
+@vol.error
+async def temp_error(ctx, error):
+    if isinstance(error, commands.BadArgument):
+        await ctx.send("Please enter a valid number.")
+
+
+@bot.command()
+async def hey(ctx, user: typing.Union[discord.Member, discord.TextChannel] = "me"):
+    if user == "me":
+        user = ctx.author
+    await ctx.send(f"Hi {user.mention}")
 
 
 with open("token", "r") as f:
